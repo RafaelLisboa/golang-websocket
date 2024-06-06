@@ -41,7 +41,6 @@ var server = NewServer()
 func handleWebSocketConnection(w http.ResponseWriter, r *http.Request) {
 	log.Printf("New client attempt to connect on server from %s", r.RemoteAddr)
 	conn, err := upgrader.Upgrade(w, r, http.Header{})
-
 	if err != nil {
 		w.Write([]byte("Error trying connect with you"))
 		log.Printf("Error %s", err)
@@ -80,9 +79,7 @@ func handleWebSocketConnection(w http.ResponseWriter, r *http.Request) {
 
 			server.roomMessageChan <- msg
 		}
-
 	}()
-
 }
 
 func broadCastMessages(messageChannel chan *message) {
@@ -98,7 +95,6 @@ func broadCastMessages(messageChannel chan *message) {
 			return true
 		})
 	}
-
 }
 
 func main() {
@@ -106,11 +102,6 @@ func main() {
 
 	serverMux := http.NewServeMux()
 
-	logF, _ := createFileLog()
-
-	logF.registerOnMessageChan(server.roomMessageChan)
-
 	serverMux.HandleFunc("/ws", handleWebSocketConnection)
 	http.ListenAndServe(":8080", serverMux)
-
 }
